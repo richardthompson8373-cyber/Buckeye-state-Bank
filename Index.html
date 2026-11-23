@@ -1,0 +1,3714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buckeye Bank | Online Banking &amp; Personal Finance</title>
+    <style>
+        /* =====================================================================
+           DESIGN SYSTEM & TOKENS (Neutral Navy, Slate & Stone Palette)
+           No red/scarlet accents; zero external CDN dependencies.
+           ===================================================================== */
+        :root {
+            --navy: #0F2942;
+            --navy-dark: #091A2B;
+            --navy-light: #1A3E63;
+            --accent: #1E40AF;
+            --accent-dark: #1E3A8A;
+            --accent-soft: #EFF6FF;
+            --bg-page: #F4F6F9;
+            --bg-surface: #FFFFFF;
+            --bg-subtle: #F8FAFC;
+            --bg-muted: #F1F5F9;
+            --text-primary: #0F2942;
+            --text-secondary: #475569;
+            --text-muted: #64748B;
+            --text-light: #94A3B8;
+            --border-color: #E2E8F0;
+            --border-strong: #CBD5E1;
+            --success-bg: #ECFDF5;
+            --success-text: #047857;
+            --success-dot: #10B981;
+            --info-bg: #EFF6FF;
+            --info-text: #1E40AF;
+            --stone-bg: #F5F5F4;
+            --stone-border: #D6D3D1;
+            --shadow-sm: 0 1px 2px rgba(15, 41, 66, 0.05);
+            --shadow-md: 0 4px 12px rgba(15, 41, 66, 0.08);
+            --shadow-lg: 0 12px 28px rgba(15, 41, 66, 0.12);
+            --shadow-xl: 0 20px 45px rgba(15, 41, 66, 0.16);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-full: 9999px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .tabular-nums {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        }
+
+        .icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .icon-sm {
+            width: 14px;
+            height: 14px;
+        }
+
+        .icon-lg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .icon-xl {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* =====================================================================
+           TOAST NOTIFICATIONS
+           ===================================================================== */
+        #toast-container {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 900;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            max-width: 360px;
+            pointer-events: none;
+            padding: 0 12px;
+        }
+
+        .toast-item {
+            pointer-events: auto;
+            background-color: var(--navy);
+            color: #FFFFFF;
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            border-left: 4px solid var(--success-dot);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .toast-item.toast-info {
+            background-color: #1E293B;
+            border-left-color: #60A5FA;
+        }
+
+        .toast-item.toast-warn {
+            background-color: #1E293B;
+            border-left-color: #CBD5E1;
+        }
+
+        .toast-close {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.75);
+            cursor: pointer;
+            padding: 2px 6px;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .toast-close:hover {
+            color: #FFFFFF;
+        }
+
+        /* =====================================================================
+           SHARED HEADER & FOOTER
+           ===================================================================== */
+        .top-header {
+            background-color: var(--navy);
+            color: #FFFFFF;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 200;
+        }
+
+        .header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 16px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        @media (min-width: 640px) {
+            .header-inner {
+                padding: 0 24px;
+            }
+        }
+
+        .brand-mark {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .brand-icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            background-color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+        }
+
+        .brand-wordmark {
+            font-size: 19px;
+            letter-spacing: -0.01em;
+            line-height: 1.1;
+        }
+
+        .brand-bold {
+            font-weight: 800;
+        }
+
+        .brand-light {
+            font-weight: 300;
+            letter-spacing: 0.08em;
+            color: #E2E8F0;
+        }
+
+        .auth-header-meta {
+            display: none;
+            align-items: center;
+            gap: 20px;
+            font-size: 12px;
+            color: #CBD5E1;
+        }
+
+        @media (min-width: 640px) {
+            .auth-header-meta {
+                display: flex;
+            }
+        }
+
+        .auth-header-meta strong {
+            color: #FFFFFF;
+        }
+
+        /* =====================================================================
+           AUTH VIEW (#auth-view)
+           ===================================================================== */
+        #auth-view {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: var(--bg-muted);
+        }
+
+        .auth-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 28px 16px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 960px;
+            background-color: var(--bg-surface);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 900px) {
+            .auth-card {
+                grid-template-columns: 5fr 7fr;
+            }
+        }
+
+        .auth-left-panel {
+            display: none;
+            background: linear-gradient(155deg, var(--navy) 0%, var(--navy-dark) 100%);
+            color: #FFFFFF;
+            padding: 32px;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (min-width: 900px) {
+            .auth-left-panel {
+                display: flex;
+            }
+        }
+
+        .auth-decor-circle-a {
+            position: absolute;
+            right: -60px;
+            bottom: -60px;
+            width: 220px;
+            height: 220px;
+            border-radius: var(--radius-full);
+            background-color: var(--navy-light);
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
+        .auth-decor-circle-b {
+            position: absolute;
+            left: -40px;
+            top: 32%;
+            width: 140px;
+            height: 140px;
+            border-radius: var(--radius-full);
+            background-color: var(--accent);
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        .auth-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            border-radius: var(--radius-full);
+            background-color: rgba(255, 255, 255, 0.12);
+            font-size: 11px;
+            font-weight: 600;
+            color: #E2E8F0;
+            margin-bottom: 20px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: var(--radius-full);
+            background-color: var(--success-dot);
+            display: inline-block;
+        }
+
+        .auth-left-heading {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.28;
+            margin: 0 0 12px 0;
+        }
+
+        .auth-left-copy {
+            font-size: 13px;
+            color: #CBD5E1;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .auth-left-features {
+            position: relative;
+            z-index: 2;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            font-size: 12px;
+            color: #CBD5E1;
+        }
+
+        .auth-feature-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .auth-feature-title {
+            font-weight: 600;
+            color: #FFFFFF;
+            margin: 0 0 2px 0;
+        }
+
+        .auth-feature-sub {
+            color: #94A3B8;
+            margin: 0;
+            font-size: 11px;
+        }
+
+        .auth-right-panel {
+            padding: 24px;
+        }
+
+        @media (min-width: 640px) {
+            .auth-right-panel {
+                padding: 32px;
+            }
+        }
+
+        .mode-switcher {
+            display: flex;
+            background-color: var(--bg-muted);
+            padding: 4px;
+            border-radius: var(--radius-md);
+            margin-bottom: 22px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            background: transparent;
+            color: var(--text-secondary);
+            transition: all 0.15s ease;
+        }
+
+        .mode-btn.active {
+            background-color: var(--bg-surface);
+            color: var(--navy);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--navy);
+            margin: 0 0 4px 0;
+        }
+
+        .form-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 0 0 16px 0;
+        }
+
+        .form-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        #signup-form {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        @media (min-width: 640px) {
+            .grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        @media (min-width: 640px) {
+            .grid-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .field-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 5px;
+        }
+
+        .field-label-upper {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        .field-help {
+            font-size: 11px;
+            color: var(--text-light);
+            margin: 4px 0 0 0;
+        }
+
+        .input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon-left {
+            position: absolute;
+            left: 12px;
+            color: var(--text-light);
+            pointer-events: none;
+            display: flex;
+        }
+
+        .input-control, .select-control {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: var(--text-primary);
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius-md);
+            outline: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .input-with-icon {
+            padding-left: 36px;
+        }
+
+        .input-with-prefix {
+            padding-left: 26px;
+        }
+
+        .input-prefix {
+            position: absolute;
+            left: 11px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .input-control:focus, .select-control:focus {
+            border-color: var(--navy);
+            box-shadow: 0 0 0 3px rgba(15, 41, 66, 0.1);
+        }
+
+        .section-box {
+            padding: 14px;
+            border-radius: var(--radius-md);
+            background-color: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-box-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .section-box-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-box-badge {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .error-banner {
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            background-color: var(--stone-bg);
+            border: 1px solid var(--stone-border);
+            color: var(--navy);
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: var(--navy);
+            color: #FFFFFF;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background-color 0.15s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--navy-dark);
+        }
+
+        .btn-compact {
+            width: auto;
+            padding: 10px 18px;
+            font-size: 12px;
+        }
+
+        .btn-secondary {
+            padding: 10px 16px;
+            background-color: var(--bg-surface);
+            color: #334155;
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-subtle);
+        }
+
+        .btn-copy {
+            padding: 5px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            background-color: var(--bg-surface);
+            color: var(--navy);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+        }
+
+        .btn-copy:hover {
+            background-color: var(--bg-muted);
+        }
+
+        .auth-footer-switch {
+            padding-top: 14px;
+            border-top: 1px solid var(--bg-muted);
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .link-btn {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--navy);
+            font-weight: 600;
+            font-size: inherit;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .link-btn-accent {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* Auth Footer: copyright 2026 + tiny educational/prank demo note */
+        .auth-footer {
+            background-color: var(--bg-surface);
+            border-top: 1px solid var(--border-color);
+            padding: 16px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .auth-footer-inner {
+            max-width: 1120px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        @media (min-width: 640px) {
+            .auth-footer-inner {
+                flex-direction: row;
+            }
+        }
+
+        .auth-footer-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .auth-tiny-note {
+            font-size: 10px;
+            color: var(--text-light);
+            margin: 8px 0 0 0;
+        }
+
+        /* =====================================================================
+           DASHBOARD VIEW (#dashboard-view)
+           ===================================================================== */
+        #dashboard-view {
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        #dashboard-view:not(.hidden) {
+            display: flex;
+        }
+
+        .desktop-nav {
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
+
+        @media (min-width: 820px) {
+            .desktop-nav {
+                display: flex;
+            }
+        }
+
+        .nav-tab {
+            background: transparent;
+            border: none;
+            color: #CBD5E1;
+            padding: 8px 13px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+
+        .nav-tab:hover {
+            color: #FFFFFF;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-tab.active {
+            color: #FFFFFF;
+            background-color: rgba(255, 255, 255, 0.16);
+            font-weight: 600;
+        }
+
+        .user-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-meta {
+            display: none;
+            text-align: right;
+        }
+
+        @media (min-width: 640px) {
+            .user-meta {
+                display: block;
+            }
+        }
+
+        .user-name-label {
+            font-size: 13px;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .user-since-label {
+            font-size: 11px;
+            color: #CBD5E1;
+            margin: 2px 0 0 0;
+        }
+
+        .signout-btn {
+            background-color: rgba(255, 255, 255, 0.14);
+            color: #FFFFFF;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .signout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.24);
+        }
+
+        .mobile-nav-strip {
+            display: block;
+            background-color: var(--navy-dark);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+            padding: 6px 8px;
+        }
+
+        @media (min-width: 820px) {
+            .mobile-nav-strip {
+                display: none;
+            }
+        }
+
+        .mobile-nav-row {
+            display: flex;
+            gap: 4px;
+            min-width: max-content;
+        }
+
+        .mnav-tab {
+            background: transparent;
+            border: none;
+            color: #CBD5E1;
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .mnav-tab.active {
+            background-color: rgba(255, 255, 255, 0.16);
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+
+        .dash-main {
+            flex: 1;
+            max-width: 1280px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+
+        @media (min-width: 640px) {
+            .dash-main {
+                padding: 32px 24px;
+            }
+        }
+
+        .section-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .card-panel {
+            background-color: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            padding: 20px;
+        }
+
+        @media (min-width: 640px) {
+            .card-panel {
+                padding: 24px;
+            }
+        }
+
+        .greeting-banner {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .greeting-banner {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
+        .eyebrow-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--accent);
+            margin: 0 0 4px 0;
+        }
+
+        .page-heading {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--navy);
+            margin: 0;
+        }
+
+        .page-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 4px 0 0 0;
+        }
+
+        .summary-pill-box {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px;
+            background-color: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+        }
+
+        .pill-micro-label {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+        }
+
+        .pill-value-sm {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .pill-value-lg {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--navy);
+        }
+
+        .pill-divider {
+            width: 1px;
+            height: 28px;
+            background-color: var(--border-color);
+        }
+
+        .icon-ghost-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: inline-flex;
+        }
+
+        .icon-ghost-btn:hover {
+            color: var(--navy);
+            background-color: rgba(15, 41, 66, 0.06);
+        }
+
+        .accounts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 900px) {
+            .accounts-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .account-card {
+            background-color: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: box-shadow 0.15s ease, border-color 0.15s ease;
+        }
+
+        .account-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: #94A3B8;
+        }
+
+        .account-stripe-checking {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background-color: var(--navy);
+        }
+
+        .account-stripe-savings {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background-color: #475569;
+        }
+
+        .account-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .badge-checking {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            background-color: var(--accent-soft);
+            color: var(--navy);
+        }
+
+        .badge-savings {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            background-color: var(--bg-muted);
+            color: #334155;
+        }
+
+        .account-card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--navy);
+            margin: 8px 0 0 0;
+        }
+
+        .account-card-sq {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background-color: var(--bg-muted);
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .account-meta-row {
+            margin-top: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .account-meta-row strong {
+            color: #1E293B;
+        }
+
+        .account-card-bottom {
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid var(--bg-muted);
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+
+        .balance-caption {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .balance-amount {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--navy);
+            margin: 2px 0 0 0;
+            line-height: 1.15;
+        }
+
+        .view-history-link {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        @media (min-width: 640px) {
+            .quick-actions-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .quick-action-btn {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color 0.15s ease;
+        }
+
+        .quick-action-btn:hover {
+            border-color: var(--navy);
+        }
+
+        .qa-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .qa-icon-green {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .qa-icon-blue {
+            background-color: var(--accent-soft);
+            color: var(--navy);
+        }
+
+        .qa-icon-slate {
+            background-color: var(--bg-muted);
+            color: #334155;
+        }
+
+        .qa-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--navy);
+            margin: 0;
+        }
+
+        .qa-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin: 1px 0 0 0;
+        }
+
+        .activity-card {
+            background-color: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .activity-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .activity-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--navy);
+            margin: 0;
+        }
+
+        .activity-row {
+            padding: 14px 24px;
+            border-bottom: 1px solid var(--bg-muted);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            cursor: pointer;
+            transition: background-color 0.12s ease;
+        }
+
+        .activity-row:last-child {
+            border-bottom: none;
+        }
+
+        .activity-row:hover {
+            background-color: var(--bg-subtle);
+        }
+
+        .tx-badge-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .tx-credit-icon {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .tx-debit-icon {
+            background-color: var(--bg-muted);
+            color: #475569;
+        }
+
+        .tx-desc {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--navy);
+            margin: 0;
+        }
+
+        .tx-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin: 2px 0 0 0;
+        }
+
+        .tx-amt-credit {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--success-text);
+            margin: 0;
+            text-align: right;
+        }
+
+        .tx-amt-debit {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1E293B;
+            margin: 0;
+            text-align: right;
+        }
+
+        .tx-bal-after {
+            font-size: 11px;
+            color: var(--text-light);
+            margin: 2px 0 0 0;
+            text-align: right;
+        }
+
+        /* Ledger Table */
+        .ledger-top {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 16px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        @media (min-width: 768px) {
+            .ledger-top {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
+        .ledger-controls-right {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pill-switcher {
+            display: inline-flex;
+            background-color: var(--bg-muted);
+            padding: 4px;
+            border-radius: var(--radius-md);
+        }
+
+        .pill-tab {
+            padding: 8px 14px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            background: transparent;
+            color: var(--text-secondary);
+        }
+
+        .pill-tab.active {
+            background-color: var(--navy);
+            color: #FFFFFF;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .filter-bar {
+            padding: 16px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        @media (min-width: 640px) {
+            .filter-bar {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+        }
+
+        .table-scroll {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+        }
+
+        table.ledger-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        table.ledger-table thead th {
+            background-color: var(--bg-subtle);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        table.ledger-table tbody td {
+            padding: 13px 14px;
+            border-bottom: 1px solid var(--bg-muted);
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        table.ledger-table tbody tr {
+            cursor: pointer;
+        }
+
+        table.ledger-table tbody tr:hover {
+            background-color: var(--bg-subtle);
+        }
+
+        .cat-pill {
+            display: inline-block;
+            padding: 2px 9px;
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-weight: 500;
+            background-color: var(--bg-muted);
+            color: #334155;
+        }
+
+        .status-posted {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--success-text);
+        }
+
+        .col-sm-hide {
+            display: none;
+        }
+
+        @media (min-width: 640px) {
+            .col-sm-hide {
+                display: table-cell;
+            }
+        }
+
+        .col-md-hide {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .col-md-hide {
+                display: table-cell;
+            }
+        }
+
+        /* Sub-tabs inside Deposits and Transfers */
+        .subtab-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .subtab-btn {
+            padding: 9px 15px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            background-color: var(--bg-muted);
+            color: #334155;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .subtab-btn.active {
+            background-color: var(--navy);
+            color: #FFFFFF;
+        }
+
+        .dd-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            padding-top: 20px;
+        }
+
+        @media (min-width: 900px) {
+            .dd-grid {
+                grid-template-columns: 5fr 7fr;
+            }
+        }
+
+        .cred-card {
+            background-color: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .cred-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cred-row:last-child {
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .auth-form-sheet {
+            background-color: var(--bg-surface);
+            border: 2px solid var(--border-strong);
+            border-radius: var(--radius-md);
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .auth-form-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--navy);
+        }
+
+        .auth-form-acct-box {
+            background-color: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ready-badge {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .upload-dropzone {
+            border: 2px dashed var(--border-strong);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            background-color: var(--bg-subtle);
+            cursor: pointer;
+            display: block;
+            transition: border-color 0.15s ease;
+        }
+
+        .upload-dropzone:hover {
+            border-color: var(--navy);
+        }
+
+        .receipt-box-pending {
+            margin-top: 18px;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            background-color: var(--stone-bg);
+            border: 1px solid var(--stone-border);
+            color: var(--navy);
+            font-size: 12px;
+        }
+
+        .receipt-box-info {
+            margin-top: 18px;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            background-color: var(--info-bg);
+            border: 1px solid #BFDBFE;
+            color: var(--navy);
+            font-size: 12px;
+        }
+
+        .info-callout {
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            background-color: var(--info-bg);
+            border: 1px solid #BFDBFE;
+            color: var(--navy);
+            font-size: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .max-w-form {
+            max-width: 720px;
+            padding-top: 20px;
+        }
+
+        .profile-tile {
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            background-color: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+        }
+
+        .profile-tile-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--navy);
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* Dashboard Footer: copyright 2026 ONLY, NO routing number or demo text */
+        .dash-footer {
+            background-color: var(--bg-surface);
+            border-top: 1px solid var(--border-color);
+            padding: 20px 16px;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+
+        @media (min-width: 640px) {
+            .dash-footer {
+                padding: 20px 24px;
+            }
+        }
+
+        .dash-footer-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        @media (min-width: 640px) {
+            .dash-footer-inner {
+                flex-direction: row;
+            }
+        }
+
+        .dash-footer-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dash-footer-right {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* =====================================================================
+           MODALS
+           ===================================================================== */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 600;
+            background-color: rgba(15, 23, 42, 0.62);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-card {
+            background-color: var(--bg-surface);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 480px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background-color: var(--navy);
+            color: #FFFFFF;
+            padding: 16px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .modal-close-btn {
+            background: transparent;
+            border: none;
+            color: #CBD5E1;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 2px 6px;
+        }
+
+        .modal-close-btn:hover {
+            color: #FFFFFF;
+        }
+
+        .modal-body {
+            padding: 22px;
+        }
+
+        .modal-footer {
+            padding: 14px 22px;
+            background-color: var(--bg-subtle);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .summary-list-box {
+            background-color: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .summary-line-total {
+            padding-top: 8px;
+            border-top: 1px solid var(--border-color);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .blocked-alert-box {
+            padding: 16px;
+            border-radius: var(--radius-md);
+            background-color: var(--stone-bg);
+            border: 1px solid var(--stone-border);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .blocked-icon-badge {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--radius-full);
+            background-color: #E7E5E4;
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printable-dd-form, #printable-dd-form * {
+                visibility: visible;
+            }
+            #printable-dd-form {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" aria-live="polite"></div>
+
+    <!-- =====================================================================
+         VIEW 1: AUTHENTICATION VIEW (#auth-view)
+         Shows ONLY Buckeye Bank header, Sign In / Sign Up switcher, Sign In
+         form, Sign Up form, and footer with copyright 2026 + tiny demo note.
+         ===================================================================== -->
+    <div id="auth-view">
+        <header class="top-header">
+            <div class="header-inner">
+                <div class="brand-mark" onclick="switchAuthTab('login')">
+                    <div class="brand-icon-box">
+                        <svg class="icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 21h18"></path>
+                            <path d="M5 21V7l7-4 7 4v14"></path>
+                            <path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01"></path>
+                        </svg>
+                    </div>
+                    <div class="brand-wordmark">
+                        <span class="brand-bold">BUCKEYE</span> <span class="brand-light">BANK</span>
+                    </div>
+                </div>
+                <div class="auth-header-meta">
+                    <span>256-Bit Encrypted Session</span>
+                    <span>Routing: <strong class="tabular-nums">650004159</strong></span>
+                    <span>Member FDIC</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="auth-main">
+            <div class="auth-card">
+                <!-- Left Brand Panel -->
+                <div class="auth-left-panel">
+                    <div class="auth-decor-circle-a"></div>
+                    <div class="auth-decor-circle-b"></div>
+
+                    <div style="position: relative; z-index: 2;">
+                        <div class="auth-pill">
+                            <span class="status-dot"></span>
+                            <span>Online Banking Portal</span>
+                        </div>
+                        <h2 class="auth-left-heading">Banking built around your financial goals.</h2>
+                        <p class="auth-left-copy">
+                            Access your Buckeye Advantage Checking and Buckeye Reserve Savings accounts, review chronological account history, and manage direct deposit details.
+                        </p>
+                    </div>
+
+                    <div class="auth-left-features">
+                        <div class="auth-feature-row">
+                            <svg class="icon icon-lg" style="color: #93C5FD; margin-top: 2px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                            <div>
+                                <p class="auth-feature-title">Security Verification</p>
+                                <p class="auth-feature-sub">Protected with personal security questions and session sign-in.</p>
+                            </div>
+                        </div>
+                        <div class="auth-feature-row">
+                            <svg class="icon icon-lg" style="color: #93C5FD; margin-top: 2px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                                <line x1="2" y1="10" x2="22" y2="10"></line>
+                            </svg>
+                            <div>
+                                <p class="auth-feature-title">U.S. Routing &amp; Account Setup</p>
+                                <p class="auth-feature-sub">Configure checking, savings, and opening balances during enrollment.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Sign In / Sign Up Panel -->
+                <div class="auth-right-panel">
+                    <div class="mode-switcher" role="tablist">
+                        <button type="button" id="tab-login-btn" class="mode-btn active" role="tab" aria-selected="true">
+                            Sign In
+                        </button>
+                        <button type="button" id="tab-signup-btn" class="mode-btn" role="tab" aria-selected="false">
+                            Sign Up / Enroll
+                        </button>
+                    </div>
+
+                    <!-- SIGN IN FORM -->
+                    <form id="login-form" class="form-stack" novalidate>
+                        <div>
+                            <h1 class="form-title">Welcome Back</h1>
+                            <p class="form-subtitle">Sign in to view your Buckeye Bank accounts and activity.</p>
+                        </div>
+
+                        <div id="login-error" class="error-banner hidden" role="alert">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span id="login-error-text">Invalid email or password.</span>
+                        </div>
+
+                        <div>
+                            <label for="login-email" class="field-label-upper">Email Address</label>
+                            <div class="input-wrap">
+                                <span class="input-icon-left">
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                        <polyline points="22,6 12,13 2,6"></polyline>
+                                    </svg>
+                                </span>
+                                <input type="email" id="login-email" required value="jordan.taylor@example.com" placeholder="jordan.taylor@example.com" class="input-control input-with-icon">
+                            </div>
+                        </div>
+
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <label for="login-password" class="field-label-upper" style="margin-bottom: 0;">Password</label>
+                                <button type="button" id="forgot-pw-btn" class="link-btn-accent">Forgot Password?</button>
+                            </div>
+                            <div class="input-wrap">
+                                <span class="input-icon-left">
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                    </svg>
+                                </span>
+                                <input type="password" id="login-password" required value="Buckeye2026!" placeholder="Enter password" class="input-control input-with-icon">
+                            </div>
+                        </div>
+
+                        <div style="padding-top: 4px;">
+                            <button type="submit" class="btn-primary">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                                    <polyline points="10 17 15 12 10 7"></polyline>
+                                    <line x1="15" y1="12" x2="3" y2="12"></line>
+                                </svg>
+                                <span>Sign In</span>
+                            </button>
+                        </div>
+
+                        <div class="auth-footer-switch">
+                            New to Buckeye Bank?
+                            <button type="button" id="switch-to-signup-link" class="link-btn">Create an Account</button>
+                        </div>
+                    </form>
+
+                    <!-- SIGN UP / ENROLLMENT FORM -->
+                    <form id="signup-form" class="form-stack hidden" novalidate>
+                        <div>
+                            <h1 class="form-title">Open Your Buckeye Bank Account</h1>
+                            <p class="form-subtitle">Enter your personal details, security questions, account numbers, and opening balances.</p>
+                        </div>
+
+                        <div id="signup-error" class="error-banner hidden" role="alert">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span id="signup-error-text">Please check your enrollment fields.</span>
+                        </div>
+
+                        <div class="grid-2">
+                            <div>
+                                <label for="reg-fname" class="field-label">First Name *</label>
+                                <input type="text" id="reg-fname" required value="Jordan" class="input-control">
+                            </div>
+                            <div>
+                                <label for="reg-lname" class="field-label">Last Name *</label>
+                                <input type="text" id="reg-lname" required value="Taylor" class="input-control">
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <div>
+                                <label for="reg-email" class="field-label">Email Address *</label>
+                                <input type="email" id="reg-email" required value="jordan.taylor@example.com" class="input-control">
+                            </div>
+                            <div>
+                                <label for="reg-phone" class="field-label">U.S. Phone Number *</label>
+                                <input type="tel" id="reg-phone" required value="(614) 555-0194" maxlength="14" class="input-control tabular-nums">
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <div>
+                                <label for="reg-dob" class="field-label">Date of Birth *</label>
+                                <input type="date" id="reg-dob" required value="1998-06-15" class="input-control">
+                            </div>
+                            <div>
+                                <label for="reg-member-since" class="field-label">Membership Start Date *</label>
+                                <input type="date" id="reg-member-since" required max="2026-04-30" value="2025-10-15" class="input-control">
+                                <p class="field-help">History runs from this date through April 2026.</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="reg-password" class="field-label">Create Online Password *</label>
+                            <input type="password" id="reg-password" required minlength="6" value="Buckeye2026!" class="input-control">
+                        </div>
+
+                        <!-- Account Numbers & Opening Balances (Set at Sign Up Only) -->
+                        <div class="section-box">
+                            <div class="section-box-header">
+                                <span class="section-box-title">Account Numbers &amp; Opening Balances</span>
+                                <span class="section-box-badge">Set at sign-up only</span>
+                            </div>
+
+                            <div>
+                                <label for="reg-routing" class="field-label">ABA Routing Number (9 Digits) *</label>
+                                <input type="text" id="reg-routing" required pattern="\d{9}" maxlength="9" value="650004159" class="input-control tabular-nums" style="font-weight: 600;">
+                            </div>
+
+                            <div class="grid-2">
+                                <div>
+                                    <label for="reg-checking-num" class="field-label">Checking Account Number *</label>
+                                    <input type="text" id="reg-checking-num" required pattern="\d{6,17}" maxlength="17" value="1234567890" class="input-control tabular-nums" style="font-weight: 600;">
+                                </div>
+                                <div>
+                                    <label for="reg-checking-bal" class="field-label">Checking Opening Balance ($) *</label>
+                                    <div class="input-wrap">
+                                        <span class="input-prefix">$</span>
+                                        <input type="number" id="reg-checking-bal" required min="0" max="999999999" step="0.01" value="4850.00" class="input-control input-with-prefix tabular-nums" style="font-weight: 600;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid-2">
+                                <div>
+                                    <label for="reg-savings-num" class="field-label">Savings Account Number *</label>
+                                    <input type="text" id="reg-savings-num" required pattern="\d{6,17}" maxlength="17" value="9876543210" class="input-control tabular-nums" style="font-weight: 600;">
+                                </div>
+                                <div>
+                                    <label for="reg-savings-bal" class="field-label">Savings Opening Balance ($) *</label>
+                                    <div class="input-wrap">
+                                        <span class="input-prefix">$</span>
+                                        <input type="number" id="reg-savings-bal" required min="0" max="999999999" step="0.01" value="12400.00" class="input-control input-with-prefix tabular-nums" style="font-weight: 600;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security Questions -->
+                        <div class="section-box">
+                            <span class="section-box-title">Security Questions</span>
+
+                            <div>
+                                <label for="reg-sq1" class="field-label">Security Question 1 *</label>
+                                <select id="reg-sq1" class="select-control" style="margin-bottom: 6px; font-size: 12px;">
+                                    <option value="What was the name of your first pet?" selected>What was the name of your first pet?</option>
+                                    <option value="In what city were you born?">In what city were you born?</option>
+                                    <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+                                </select>
+                                <input type="text" id="reg-sa1" required value="Maple" placeholder="Answer to Question 1" class="input-control">
+                            </div>
+
+                            <div>
+                                <label for="reg-sq2" class="field-label">Security Question 2 *</label>
+                                <select id="reg-sq2" class="select-control" style="margin-bottom: 6px; font-size: 12px;">
+                                    <option value="What street did you grow up on?" selected>What street did you grow up on?</option>
+                                    <option value="What elementary school did you attend?">What elementary school did you attend?</option>
+                                    <option value="What was the make of your first car?">What was the make of your first car?</option>
+                                </select>
+                                <input type="text" id="reg-sa2" required value="Columbus" placeholder="Answer to Question 2" class="input-control">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            <span>Complete Enrollment &amp; Open Accounts</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <footer class="auth-footer">
+            <div class="auth-footer-inner">
+                <p style="margin: 0;">&copy; 2026 Buckeye Bank, N.A. Member FDIC. Equal Housing Lender.</p>
+                <div class="auth-footer-links">
+                    <span>Privacy</span>
+                    <span>Security</span>
+                    <span>Terms</span>
+                </div>
+            </div>
+            <p class="auth-tiny-note">Educational &amp; friendly prank demo purpose only — simulated banking interface.</p>
+        </footer>
+    </div>
+
+    <!-- =====================================================================
+         VIEW 2: AUTHENTICATED DASHBOARD (#dashboard-view)
+         Hidden on initial load until sign-in or enrollment completes.
+         ===================================================================== -->
+    <div id="dashboard-view" class="hidden">
+        <header class="top-header">
+            <div class="header-inner">
+                <div class="brand-mark" id="dash-brand-home">
+                    <div class="brand-icon-box">
+                        <svg class="icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 21h18"></path>
+                            <path d="M5 21V7l7-4 7 4v14"></path>
+                            <path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01"></path>
+                        </svg>
+                    </div>
+                    <div class="brand-wordmark">
+                        <span class="brand-bold">BUCKEYE</span> <span class="brand-light">BANK</span>
+                    </div>
+                </div>
+
+                <nav class="desktop-nav" aria-label="Primary Banking Navigation">
+                    <button type="button" id="nav-overview" class="nav-tab active" data-section="overview">Accounts</button>
+                    <button type="button" id="nav-history" class="nav-tab" data-section="history">History &amp; Statements</button>
+                    <button type="button" id="nav-deposits" class="nav-tab" data-section="deposits">Deposits</button>
+                    <button type="button" id="nav-transfers" class="nav-tab" data-section="transfers">Transfers &amp; Wires</button>
+                    <button type="button" id="nav-profile" class="nav-tab" data-section="profile">Profile</button>
+                </nav>
+
+                <div class="user-bar">
+                    <div class="user-meta">
+                        <p id="header-user-name" class="user-name-label">Jordan Taylor</p>
+                        <p id="header-member-since" class="user-since-label">Member since Oct 15, 2025</p>
+                    </div>
+                    <button type="button" id="signout-btn" class="signout-btn">
+                        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Sign Out</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mobile-nav-strip">
+                <div class="mobile-nav-row">
+                    <button type="button" id="mnav-overview" class="mnav-tab active" data-section="overview">Accounts</button>
+                    <button type="button" id="mnav-history" class="mnav-tab" data-section="history">History</button>
+                    <button type="button" id="mnav-deposits" class="mnav-tab" data-section="deposits">Deposits</button>
+                    <button type="button" id="mnav-transfers" class="mnav-tab" data-section="transfers">Transfers &amp; Wires</button>
+                    <button type="button" id="mnav-profile" class="mnav-tab" data-section="profile">Profile</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="dash-main">
+            <!-- SECTION 1: ACCOUNTS OVERVIEW -->
+            <section id="sec-overview" class="section-stack">
+                <div class="card-panel greeting-banner">
+                    <div>
+                        <p class="eyebrow-label">Personal Banking Summary</p>
+                        <h1 class="page-heading">Welcome back, <span id="dash-greeting-name">Jordan</span></h1>
+                        <p class="page-sub">
+                            Membership Date: <strong id="dash-member-date">Oct 15, 2025</strong> &bull; Statement Period Through: <strong>Apr 30, 2026</strong>
+                        </p>
+                    </div>
+
+                    <div class="summary-pill-box">
+                        <div>
+                            <span class="pill-micro-label">ABA Routing Number</span>
+                            <span id="dash-routing-num" class="pill-value-sm tabular-nums">650004159</span>
+                        </div>
+                        <button type="button" id="copy-routing-btn" class="icon-ghost-btn" title="Copy Routing Number" aria-label="Copy Routing Number">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                        </button>
+                        <div class="pill-divider"></div>
+                        <div>
+                            <span class="pill-micro-label">Total Balances</span>
+                            <span id="dash-total-balance" class="pill-value-lg tabular-nums">$17,250.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Checking & Savings Account Cards -->
+                <div class="accounts-grid">
+                    <!-- Checking Card -->
+                    <div id="card-checking-box" class="account-card" role="button" tabindex="0">
+                        <div class="account-stripe-checking"></div>
+                        <div>
+                            <div class="account-card-top">
+                                <div>
+                                    <span class="badge-checking">Premier Checking</span>
+                                    <h2 class="account-card-title">Buckeye Advantage Checking</h2>
+                                </div>
+                                <div class="account-card-sq">
+                                    <svg class="icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                                        <line x1="2" y1="10" x2="22" y2="10"></line>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="account-meta-row">
+                                <div>
+                                    <span>Account #: </span>
+                                    <strong id="card-checking-num" class="tabular-nums">1234567890</strong>
+                                    <button type="button" id="copy-checking-btn" class="icon-ghost-btn" title="Copy Checking Account Number" aria-label="Copy Checking Account Number">
+                                        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div>
+                                    <span>Routing: </span>
+                                    <strong id="card-checking-routing" class="tabular-nums">650004159</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="account-card-bottom">
+                            <div>
+                                <p class="balance-caption">Available Balance</p>
+                                <p id="card-checking-balance" class="balance-amount tabular-nums">$4,850.00</p>
+                            </div>
+                            <span class="view-history-link">
+                                View History
+                                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Savings Card -->
+                    <div id="card-savings-box" class="account-card" role="button" tabindex="0">
+                        <div class="account-stripe-savings"></div>
+                        <div>
+                            <div class="account-card-top">
+                                <div>
+                                    <span class="badge-savings">High-Yield Savings &bull; 4.35% APY</span>
+                                    <h2 class="account-card-title">Buckeye Reserve Savings</h2>
+                                </div>
+                                <div class="account-card-sq">
+                                    <svg class="icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z"></path>
+                                        <path d="M2 9v1c0 1.1.9 2 2 2h1"></path>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="account-meta-row">
+                                <div>
+                                    <span>Account #: </span>
+                                    <strong id="card-savings-num" class="tabular-nums">9876543210</strong>
+                                    <button type="button" id="copy-savings-btn" class="icon-ghost-btn" title="Copy Savings Account Number" aria-label="Copy Savings Account Number">
+                                        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div>
+                                    <span>Routing: </span>
+                                    <strong id="card-savings-routing" class="tabular-nums">650004159</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="account-card-bottom">
+                            <div>
+                                <p class="balance-caption">Available Balance</p>
+                                <p id="card-savings-balance" class="balance-amount tabular-nums">$12,400.00</p>
+                            </div>
+                            <span class="view-history-link">
+                                View History
+                                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Action Tiles -->
+                <div class="quick-actions-grid">
+                    <button type="button" class="quick-action-btn" data-qa="deposits:direct">
+                        <div class="qa-icon qa-icon-green">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="qa-title">Direct Deposit</p>
+                            <p class="qa-sub">Routing &amp; Setup</p>
+                        </div>
+                    </button>
+
+                    <button type="button" class="quick-action-btn" data-qa="deposits:mobile">
+                        <div class="qa-icon qa-icon-blue">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="qa-title">Mobile Deposit</p>
+                            <p class="qa-sub">Deposit a Check</p>
+                        </div>
+                    </button>
+
+                    <button type="button" class="quick-action-btn" data-qa="transfers:ach">
+                        <div class="qa-icon qa-icon-slate">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="17 1 21 5 17 9"></polyline>
+                                <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                                <polyline points="7 23 3 19 7 15"></polyline>
+                                <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="qa-title">ACH Transfer</p>
+                            <p class="qa-sub">External Bank</p>
+                        </div>
+                    </button>
+
+                    <button type="button" class="quick-action-btn" data-qa="transfers:wire">
+                        <div class="qa-icon qa-icon-blue">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="qa-title">Wire Transfer</p>
+                            <p class="qa-sub">Domestic &amp; Int'l</p>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Recent Account Activity -->
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div>
+                            <h3 class="activity-title">Recent Account Activity</h3>
+                            <p class="page-sub" style="margin-top: 2px;">Click any transaction to open its full receipt</p>
+                        </div>
+                        <button type="button" id="view-all-history-btn" class="link-btn-accent">View Full History &rarr;</button>
+                    </div>
+                    <div id="overview-recent-list"></div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: FULL ACCOUNT HISTORY & LEDGER -->
+            <section id="sec-history" class="section-stack hidden">
+                <div class="card-panel">
+                    <div class="ledger-top">
+                        <div>
+                            <button type="button" id="back-to-accounts-btn" class="link-btn" style="font-size: 12px; text-decoration: none; margin-bottom: 6px; display: inline-flex; align-items: center; gap: 4px;">
+                                &larr; Back to Accounts
+                            </button>
+                            <h1 id="ledger-title" class="page-heading">Buckeye Advantage Checking</h1>
+                            <p id="ledger-subtitle" class="page-sub tabular-nums">Account #1234567890 &bull; Routing #650004159</p>
+                        </div>
+
+                        <div class="ledger-controls-right">
+                            <div class="pill-switcher">
+                                <button type="button" id="ledger-tab-checking" class="pill-tab active">Checking (1234567890)</button>
+                                <button type="button" id="ledger-tab-savings" class="pill-tab">Savings (9876543210)</button>
+                            </div>
+
+                            <div class="summary-pill-box" style="padding: 8px 14px;">
+                                <div style="text-align: right;">
+                                    <span class="pill-micro-label">Available Balance</span>
+                                    <span id="ledger-balance" class="pill-value-lg tabular-nums">$4,850.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-bar">
+                        <div style="flex: 1; max-width: 380px;">
+                            <input type="text" id="tx-search" placeholder="Search merchant, description, or reference ID..." class="input-control" style="font-size: 12px; padding: 8px 12px;">
+                        </div>
+                        <div>
+                            <select id="tx-type-filter" class="select-control" style="font-size: 12px; padding: 8px 12px; width: auto;">
+                                <option value="all">All Transactions</option>
+                                <option value="credit">Credits (+)</option>
+                                <option value="debit">Debits (-)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-scroll">
+                        <table class="ledger-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th class="col-sm-hide">Category</th>
+                                    <th class="col-md-hide">Status</th>
+                                    <th style="text-align: right;">Amount</th>
+                                    <th class="col-sm-hide" style="text-align: right;">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ledger-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: DEPOSITS (DIRECT DEPOSIT, MOBILE CHECK, INBOUND ACH) -->
+            <section id="sec-deposits" class="section-stack hidden">
+                <div class="card-panel">
+                    <h1 class="page-heading">Deposit Center</h1>
+                    <p class="page-sub">Direct deposit setup, mobile check deposit, and inbound ACH funding.</p>
+
+                    <div class="subtab-bar">
+                        <button type="button" id="dep-tab-direct" class="subtab-btn active">Direct Deposit Setup</button>
+                        <button type="button" id="dep-tab-mobile" class="subtab-btn">Mobile Check Deposit</button>
+                        <button type="button" id="dep-tab-ach" class="subtab-btn">Inbound ACH Deposit</button>
+                    </div>
+
+                    <!-- Direct Deposit Panel -->
+                    <div id="dep-panel-direct" class="dd-grid">
+                        <div class="form-stack">
+                            <h3 class="activity-title">Your Direct Deposit Credentials</h3>
+                            <p class="page-sub" style="margin-top: 0; line-height: 1.55;">
+                                Provide your employer or payroll provider with the routing and account numbers below to route paychecks or benefits.
+                            </p>
+
+                            <div class="cred-card">
+                                <div class="cred-row">
+                                    <div>
+                                        <span class="pill-micro-label">Bank Name</span>
+                                        <strong class="pill-value-sm">Buckeye Bank, N.A.</strong>
+                                    </div>
+                                </div>
+                                <div class="cred-row">
+                                    <div>
+                                        <span class="pill-micro-label">ABA Routing Number</span>
+                                        <strong id="dd-cred-routing" class="pill-value-sm tabular-nums">650004159</strong>
+                                    </div>
+                                    <button type="button" id="dd-copy-routing" class="btn-copy">Copy</button>
+                                </div>
+                                <div class="cred-row">
+                                    <div>
+                                        <span class="pill-micro-label">Checking Account Number</span>
+                                        <strong id="dd-cred-checking" class="pill-value-sm tabular-nums">1234567890</strong>
+                                    </div>
+                                    <button type="button" id="dd-copy-checking" class="btn-copy">Copy</button>
+                                </div>
+                                <div class="cred-row">
+                                    <div>
+                                        <span class="pill-micro-label">Savings Account Number</span>
+                                        <strong id="dd-cred-savings" class="pill-value-sm tabular-nums">9876543210</strong>
+                                    </div>
+                                    <button type="button" id="dd-copy-savings" class="btn-copy">Copy</button>
+                                </div>
+                            </div>
+
+                            <button type="button" id="print-dd-btn" class="btn-primary">
+                                Print / Save Direct Deposit Authorization Form
+                            </button>
+                        </div>
+
+                        <div id="printable-dd-form" class="auth-form-sheet">
+                            <div class="auth-form-head">
+                                <div>
+                                    <h4 style="margin: 0; font-size: 15px; font-weight: 800; color: var(--navy);">BUCKEYE BANK</h4>
+                                    <p style="margin: 2px 0 0 0; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);">Direct Deposit Authorization Form</p>
+                                </div>
+                                <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Form DD-104</span>
+                            </div>
+
+                            <div class="grid-2" style="font-size: 12px;">
+                                <div>
+                                    <span style="color: var(--text-muted); display: block;">Account Holder</span>
+                                    <strong id="dd-form-name" style="color: var(--navy); font-size: 14px;">Jordan Taylor</strong>
+                                </div>
+                                <div>
+                                    <span style="color: var(--text-muted); display: block;">ABA Routing Number</span>
+                                    <strong id="dd-form-routing" class="tabular-nums" style="color: var(--navy); font-size: 14px;">650004159</strong>
+                                </div>
+                                <div>
+                                    <label for="dd-form-acct-type" style="color: var(--text-muted); display: block; margin-bottom: 4px;">Account Type</label>
+                                    <select id="dd-form-acct-type" class="select-control" style="padding: 6px 10px; font-size: 12px;">
+                                        <option value="checking">Checking (1234567890)</option>
+                                        <option value="savings">Savings (9876543210)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <span style="color: var(--text-muted); display: block;">Bank Status</span>
+                                    <span class="ready-badge" style="display: inline-block; margin-top: 4px;">ACH Ready</span>
+                                </div>
+                            </div>
+
+                            <div class="auth-form-acct-box">
+                                <div>
+                                    <span style="color: var(--text-muted); font-size: 11px; display: block;">Selected Account Number</span>
+                                    <strong id="dd-form-acct-num" class="tabular-nums" style="color: var(--navy); font-size: 16px; letter-spacing: 0.04em;">1234567890</strong>
+                                </div>
+                                <span style="font-size: 11px; font-weight: 600; color: var(--text-secondary);">Buckeye Bank, N.A.</span>
+                            </div>
+
+                            <p style="margin: 0; padding-top: 10px; border-top: 1px solid var(--bg-muted); font-size: 11px; color: var(--text-muted);">
+                                I authorize my employer or payer to initiate credit entries to the Buckeye Bank account specified above.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Check Deposit Panel -->
+                    <div id="dep-panel-mobile" class="max-w-form hidden">
+                        <form id="mobile-check-form" class="form-stack">
+                            <div class="info-callout">
+                                <svg class="icon" style="color: var(--accent); margin-top: 1px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                                <div>
+                                    <strong>Mobile Check Deposit:</strong> Endorse the back of your check and include <em>"For Mobile Deposit Only at Buckeye Bank"</em>. Daily limit: $10,000.00.
+                                </div>
+                            </div>
+
+                            <div class="grid-2">
+                                <div>
+                                    <label for="mcd-account" class="field-label">Deposit To Account</label>
+                                    <select id="mcd-account" class="select-control">
+                                        <option value="Buckeye Checking (1234567890)">Buckeye Checking (1234567890)</option>
+                                        <option value="Buckeye Savings (9876543210)">Buckeye Savings (9876543210)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="mcd-amount" class="field-label">Check Amount ($)</label>
+                                    <input type="number" id="mcd-amount" required min="1" max="10000" step="0.01" placeholder="250.00" class="input-control tabular-nums" style="font-weight: 600;">
+                                </div>
+                            </div>
+
+                            <div class="grid-2">
+                                <label class="upload-dropzone">
+                                    <input type="file" id="mcd-front-file" accept="image/*" class="hidden">
+                                    <p class="qa-title" style="font-size: 13px;">Front of Check</p>
+                                    <p id="front-status" class="qa-sub" style="margin-top: 4px;">Click to select check front image</p>
+                                </label>
+
+                                <label class="upload-dropzone">
+                                    <input type="file" id="mcd-back-file" accept="image/*" class="hidden">
+                                    <p class="qa-title" style="font-size: 13px;">Back of Check (Endorsed)</p>
+                                    <p id="back-status" class="qa-sub" style="margin-top: 4px;">Click to select check back image</p>
+                                </label>
+                            </div>
+
+                            <div>
+                                <button type="submit" class="btn-primary btn-compact">Submit Check Deposit</button>
+                            </div>
+                        </form>
+                        <div id="mcd-receipt" class="receipt-box-pending hidden"></div>
+                    </div>
+
+                    <!-- Inbound ACH Deposit Panel -->
+                    <div id="dep-panel-ach" class="max-w-form hidden">
+                        <form id="inbound-ach-form" class="form-stack">
+                            <p class="page-sub" style="margin-top: 0;">Pull funds into your Buckeye Bank account from an external U.S. bank account.</p>
+
+                            <div class="grid-2">
+                                <div>
+                                    <label for="ach-in-bank" class="field-label">External Bank Name *</label>
+                                    <input type="text" id="ach-in-bank" required placeholder="Chase Bank" class="input-control">
+                                </div>
+                                <div>
+                                    <label for="ach-in-routing" class="field-label">External ABA Routing Number (9 Digits) *</label>
+                                    <input type="text" id="ach-in-routing" required pattern="\d{9}" maxlength="9" placeholder="044000024" class="input-control tabular-nums">
+                                </div>
+                            </div>
+
+                            <div class="grid-2">
+                                <div>
+                                    <label for="ach-in-acct" class="field-label">External Account Number *</label>
+                                    <input type="text" id="ach-in-acct" required placeholder="5501928374" class="input-control tabular-nums">
+                                </div>
+                                <div>
+                                    <label for="ach-in-dest" class="field-label">Destination Buckeye Account</label>
+                                    <select id="ach-in-dest" class="select-control">
+                                        <option value="Buckeye Checking (1234567890)">Buckeye Checking (1234567890)</option>
+                                        <option value="Buckeye Savings (9876543210)">Buckeye Savings (9876543210)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="ach-in-amount" class="field-label">Inbound Deposit Amount ($) *</label>
+                                <input type="number" id="ach-in-amount" required min="1" step="0.01" placeholder="500.00" class="input-control tabular-nums" style="max-width: 260px; font-weight: 600;">
+                            </div>
+
+                            <div>
+                                <button type="submit" class="btn-primary btn-compact">Schedule Inbound ACH Deposit</button>
+                            </div>
+                        </form>
+                        <div id="ach-in-receipt" class="receipt-box-info hidden"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: TRANSFERS & WIRES (OUTGOING BLOCKED AT FINAL STEP) -->
+            <section id="sec-transfers" class="section-stack hidden">
+                <div class="card-panel">
+                    <div class="greeting-banner">
+                        <div>
+                            <h1 class="page-heading">Transfers &amp; Wire Center</h1>
+                            <p class="page-sub">Initiate an external ACH transfer or domestic/international wire transfer.</p>
+                        </div>
+                        <span class="badge-savings">Wire Cutoff: 4:00 PM EST</span>
+                    </div>
+
+                    <div class="subtab-bar">
+                        <button type="button" id="trf-tab-ach" class="subtab-btn active">ACH Transfer</button>
+                        <button type="button" id="trf-tab-wire" class="subtab-btn">Wire Transfer</button>
+                    </div>
+
+                    <!-- Outgoing ACH Form -->
+                    <div id="trf-panel-ach" class="max-w-form">
+                        <form id="ach-out-form" class="form-stack">
+                            <div class="grid-2">
+                                <div>
+                                    <label for="ach-out-from" class="field-label">From Buckeye Account *</label>
+                                    <select id="ach-out-from" class="select-control">
+                                        <option value="Buckeye Checking (1234567890)">Buckeye Checking (1234567890)</option>
+                                        <option value="Buckeye Savings (9876543210)">Buckeye Savings (9876543210)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="ach-out-name" class="field-label">Recipient Full Name / Business *</label>
+                                    <input type="text" id="ach-out-name" required placeholder="Alex Morgan" class="input-control">
+                                </div>
+                            </div>
+
+                            <div class="grid-3">
+                                <div>
+                                    <label for="ach-out-bank" class="field-label">Receiving Bank *</label>
+                                    <input type="text" id="ach-out-bank" required placeholder="Wells Fargo Bank" class="input-control">
+                                </div>
+                                <div>
+                                    <label for="ach-out-routing" class="field-label">ABA Routing Number *</label>
+                                    <input type="text" id="ach-out-routing" required pattern="\d{9}" maxlength="9" placeholder="121000248" class="input-control tabular-nums">
+                                </div>
+                                <div>
+                                    <label for="ach-out-acct" class="field-label">Recipient Account # *</label>
+                                    <input type="text" id="ach-out-acct" required placeholder="0098412231" class="input-control tabular-nums">
+                                </div>
+                            </div>
+
+                            <div class="grid-2">
+                                <div>
+                                    <label for="ach-out-amount" class="field-label">Transfer Amount ($) *</label>
+                                    <input type="number" id="ach-out-amount" required min="1" step="0.01" placeholder="250.00" class="input-control tabular-nums" style="font-weight: 700;">
+                                </div>
+                                <div>
+                                    <label for="ach-out-speed" class="field-label">Transfer Speed</label>
+                                    <select id="ach-out-speed" class="select-control">
+                                        <option value="Standard ACH (1-3 Business Days) — Free">Standard ACH (1-3 Business Days) — Free</option>
+                                        <option value="Next-Day ACH — $3.00 Fee">Next-Day ACH — $3.00 Fee</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="ach-out-memo" class="field-label">Memo (Optional)</label>
+                                <input type="text" id="ach-out-memo" placeholder="Monthly payment or transfer note" class="input-control">
+                            </div>
+
+                            <div style="padding-top: 4px;">
+                                <button type="submit" class="btn-primary btn-compact">Continue to Review &rarr;</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Outgoing Wire Form -->
+                    <div id="trf-panel-wire" class="max-w-form hidden">
+                        <form id="wire-out-form" class="form-stack">
+                            <div class="grid-2">
+                                <div>
+                                    <label for="wire-scope" class="field-label">Wire Type *</label>
+                                    <select id="wire-scope" class="select-control">
+                                        <option value="Domestic Fedwire ($25.00 Fee)">Domestic Fedwire ($25.00 Fee)</option>
+                                        <option value="International SWIFT Wire ($45.00 Fee)">International SWIFT Wire ($45.00 Fee)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="wire-out-from" class="field-label">From Buckeye Account *</label>
+                                    <select id="wire-out-from" class="select-control">
+                                        <option value="Buckeye Checking (1234567890)">Buckeye Checking (1234567890)</option>
+                                        <option value="Buckeye Savings (9876543210)">Buckeye Savings (9876543210)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid-2">
+                                <div>
+                                    <label for="wire-out-name" class="field-label">Beneficiary Name *</label>
+                                    <input type="text" id="wire-out-name" required placeholder="Taylor &amp; Associates LLC" class="input-control">
+                                </div>
+                                <div>
+                                    <label for="wire-out-address" class="field-label">Beneficiary Address *</label>
+                                    <input type="text" id="wire-out-address" required placeholder="250 High St, Columbus, OH 43215" class="input-control">
+                                </div>
+                            </div>
+
+                            <div class="grid-3">
+                                <div>
+                                    <label for="wire-out-bank" class="field-label">Beneficiary Bank *</label>
+                                    <input type="text" id="wire-out-bank" required placeholder="Citibank, N.A." class="input-control">
+                                </div>
+                                <div>
+                                    <label for="wire-out-routing" class="field-label">Routing / SWIFT Code *</label>
+                                    <input type="text" id="wire-out-routing" required placeholder="021000089" class="input-control tabular-nums">
+                                </div>
+                                <div>
+                                    <label for="wire-out-acct" class="field-label">Account / IBAN *</label>
+                                    <input type="text" id="wire-out-acct" required placeholder="4491028374" class="input-control tabular-nums">
+                                </div>
+                            </div>
+
+                            <div class="grid-2">
+                                <div>
+                                    <label for="wire-out-amount" class="field-label">Wire Amount ($) *</label>
+                                    <input type="number" id="wire-out-amount" required min="1" step="0.01" placeholder="1250.00" class="input-control tabular-nums" style="font-weight: 700;">
+                                </div>
+                                <div>
+                                    <label for="wire-out-memo" class="field-label">Purpose of Wire *</label>
+                                    <input type="text" id="wire-out-memo" required placeholder="Contract settlement" class="input-control">
+                                </div>
+                            </div>
+
+                            <div style="padding-top: 4px;">
+                                <button type="submit" class="btn-primary btn-compact">Continue to Review &rarr;</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: MEMBER PROFILE -->
+            <section id="sec-profile" class="section-stack hidden">
+                <div class="card-panel" style="max-width: 720px;">
+                    <h1 class="page-heading">Member Profile &amp; Security</h1>
+                    <p class="page-sub">Enrollment details and security questions registered on this Buckeye Bank profile.</p>
+
+                    <div class="grid-2" style="margin-top: 20px;">
+                        <div class="profile-tile">
+                            <span class="pill-micro-label">Full Name</span>
+                            <span id="prof-name" class="profile-tile-value">Jordan Taylor</span>
+                        </div>
+                        <div class="profile-tile">
+                            <span class="pill-micro-label">Email Address</span>
+                            <span id="prof-email" class="profile-tile-value">jordan.taylor@example.com</span>
+                        </div>
+                        <div class="profile-tile">
+                            <span class="pill-micro-label">U.S. Phone Number</span>
+                            <span id="prof-phone" class="profile-tile-value tabular-nums">(614) 555-0194</span>
+                        </div>
+                        <div class="profile-tile">
+                            <span class="pill-micro-label">Date of Birth</span>
+                            <span id="prof-dob" class="profile-tile-value">Jun 15, 1998</span>
+                        </div>
+                        <div class="profile-tile">
+                            <span class="pill-micro-label">Membership Start Date</span>
+                            <span id="prof-member-since" class="profile-tile-value">Oct 15, 2025</span>
+                        </div>
+                        <div class="profile-tile">
+                            <span class="pill-micro-label">ABA Routing Number</span>
+                            <span id="prof-routing" class="profile-tile-value tabular-nums">650004159</span>
+                        </div>
+                    </div>
+
+                    <div class="profile-tile" style="margin-top: 16px;">
+                        <span class="pill-micro-label" style="margin-bottom: 10px;">Security Questions On File</span>
+                        <div style="font-size: 12px; display: flex; flex-direction: column; gap: 8px;">
+                            <div>
+                                <span style="color: var(--text-muted);">Question 1:</span>
+                                <strong id="prof-sq1" style="color: var(--navy);">What was the name of your first pet?</strong>
+                                <span style="color: var(--text-light); margin-left: 6px;">(Answer: <span id="prof-sa1">Maple</span>)</span>
+                            </div>
+                            <div>
+                                <span style="color: var(--text-muted);">Question 2:</span>
+                                <strong id="prof-sq2" style="color: var(--navy);">What street did you grow up on?</strong>
+                                <span style="color: var(--text-light); margin-left: 6px;">(Answer: <span id="prof-sa2">Columbus</span>)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Dashboard Footer: copyright 2026 ONLY, NO routing number or demo text -->
+        <footer class="dash-footer">
+            <div class="dash-footer-inner">
+                <div class="dash-footer-left">
+                    <strong style="color: var(--navy);">Buckeye Bank, N.A.</strong>
+                    <span>&bull;</span>
+                    <span>&copy; 2026 All Rights Reserved.</span>
+                </div>
+                <div class="dash-footer-right">
+                    <span>Member FDIC</span>
+                    <span>Equal Housing Lender</span>
+                    <span>Support: 1-800-555-0199</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- =====================================================================
+         MODAL 1: TRANSACTION RECEIPT DETAILS
+         ===================================================================== -->
+    <div id="tx-detail-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="tx-modal-title">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="tx-modal-title" class="modal-title">Transaction Receipt</h3>
+                <button type="button" id="close-tx-modal-x" class="modal-close-btn" aria-label="Close receipt">&times;</button>
+            </div>
+            <div id="tx-detail-body" class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" id="close-tx-modal-btn" class="btn-primary btn-compact">Close Receipt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         MODAL 2: TRANSFER REVIEW & FINAL BLOCKED MESSAGE
+         ===================================================================== -->
+    <div id="transfer-review-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="review-modal-title">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="review-modal-title" class="modal-title">Review Outgoing Transfer</h3>
+                <button type="button" id="close-trf-modal-x" class="modal-close-btn" aria-label="Close transfer modal">&times;</button>
+            </div>
+
+            <!-- Step 1: Review Details -->
+            <div id="review-step-confirm" class="modal-body form-stack">
+                <p class="page-sub" style="margin-top: 0;">Verify the transfer details below before authorizing.</p>
+                <div id="review-summary-box" class="summary-list-box"></div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 6px;">
+                    <button type="button" id="cancel-trf-btn" class="btn-secondary">Cancel</button>
+                    <button type="button" id="btn-final-send" class="btn-primary btn-compact">Confirm &amp; Send Money</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Final Step Restriction Message -->
+            <div id="review-step-error" class="modal-body form-stack hidden">
+                <div class="blocked-alert-box">
+                    <div class="blocked-icon-badge">
+                        <svg class="icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div>
+                        <p style="margin: 0; font-size: 14px; font-weight: 700; color: var(--navy);">Outgoing Transfer Unavailable</p>
+                        <p style="margin: 6px 0 0 0; font-size: 12px; color: #334155; line-height: 1.55;">
+                            You can’t send money out at this moment. Outgoing transfers are currently unavailable on this account. No funds have been deducted from your balance.
+                        </p>
+                        <p class="mono" style="margin: 8px 0 0 0; font-size: 11px; color: var(--text-muted);">Reference: BKB-OUT-HOLD &bull; Balance Unchanged</p>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; padding-top: 4px;">
+                    <button type="button" id="done-trf-error-btn" class="btn-primary btn-compact">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         APPLICATION LOGIC
+         Wrapped cleanly with DOMContentLoaded initialization and full event
+         binding so all interactions work reliably in any browser or iframe.
+         ===================================================================== -->
+    <script>
+        (function () {
+            'use strict';
+
+            const STORAGE_USERS_KEY = 'buckeye_bank_users_v2';
+            const STORAGE_SESSION_KEY = 'buckeye_bank_session_email_v2';
+            const STATEMENT_END_DATE = '2026-04-30';
+
+            const DEFAULT_PROFILE = {
+                firstName: 'Jordan',
+                lastName: 'Taylor',
+                email: 'jordan.taylor@example.com',
+                phone: '(614) 555-0194',
+                dob: '1998-06-15',
+                memberSince: '2025-10-15',
+                password: 'Buckeye2026!',
+                routingNumber: '650004159',
+                checkingNumber: '1234567890',
+                savingsNumber: '9876543210',
+                checkingBalance: 4850.00,
+                savingsBalance: 12400.00,
+                sq1: 'What was the name of your first pet?',
+                sa1: 'Maple',
+                sq2: 'What street did you grow up on?',
+                sa2: 'Columbus'
+            };
+
+            let currentUser = null;
+            let currentLedgerAccount = 'checking';
+
+            // -----------------------------------------------------------------
+            // STORAGE & INITIALIZATION
+            // -----------------------------------------------------------------
+            function readUsers() {
+                try {
+                    const raw = window.localStorage.getItem(STORAGE_USERS_KEY);
+                    return raw ? JSON.parse(raw) : {};
+                } catch (err) {
+                    return {};
+                }
+            }
+
+            function writeUsers(usersObj) {
+                try {
+                    window.localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(usersObj));
+                } catch (err) {
+                    // Fallback in-memory session if storage is restricted
+                }
+            }
+
+            function buildUserRecord(data) {
+                const startDate = data.memberSince || DEFAULT_PROFILE.memberSince;
+                const chkBal = roundCents(Math.max(0, Number(data.checkingBalance) || 0));
+                const savBal = roundCents(Math.max(0, Number(data.savingsBalance) || 0));
+                return {
+                    firstName: (data.firstName || DEFAULT_PROFILE.firstName).trim(),
+                    lastName: (data.lastName || DEFAULT_PROFILE.lastName).trim(),
+                    email: (data.email || DEFAULT_PROFILE.email).trim().toLowerCase(),
+                    phone: (data.phone || DEFAULT_PROFILE.phone).trim(),
+                    dob: data.dob || DEFAULT_PROFILE.dob,
+                    memberSince: startDate,
+                    password: data.password || DEFAULT_PROFILE.password,
+                    routingNumber: (data.routingNumber || DEFAULT_PROFILE.routingNumber).trim(),
+                    checkingNumber: (data.checkingNumber || DEFAULT_PROFILE.checkingNumber).trim(),
+                    savingsNumber: (data.savingsNumber || DEFAULT_PROFILE.savingsNumber).trim(),
+                    checkingBalance: chkBal,
+                    savingsBalance: savBal,
+                    sq1: data.sq1 || DEFAULT_PROFILE.sq1,
+                    sa1: (data.sa1 || DEFAULT_PROFILE.sa1).trim(),
+                    sq2: data.sq2 || DEFAULT_PROFILE.sq2,
+                    sa2: (data.sa2 || DEFAULT_PROFILE.sa2).trim(),
+                    checkingHistory: generateLedger('checking', startDate, chkBal),
+                    savingsHistory: generateLedger('savings', startDate, savBal)
+                };
+            }
+
+            function seedDefaultUser() {
+                const users = readUsers();
+                const demoEmail = DEFAULT_PROFILE.email;
+                if (!users[demoEmail]) {
+                    users[demoEmail] = buildUserRecord(DEFAULT_PROFILE);
+                    writeUsers(users);
+                }
+            }
+
+            // -----------------------------------------------------------------
+            // CHRONOLOGICAL LEDGER GENERATOR (Membership Start -> Apr 30, 2026)
+            // Reconciles cleanly so the latest transaction equals targetBalance.
+            // -----------------------------------------------------------------
+            function parseISODate(isoStr) {
+                const parts = (isoStr || '2025-10-15').split('-').map(Number);
+                return new Date(Date.UTC(parts[0] || 2025, (parts[1] || 10) - 1, parts[2] || 15));
+            }
+
+            function toISODate(dateObj) {
+                const y = dateObj.getUTCFullYear();
+                const m = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
+                const d = String(dateObj.getUTCDate()).padStart(2, '0');
+                return `${y}-${m}-${d}`;
+            }
+
+            function addDaysUTC(dateObj, days) {
+                return new Date(dateObj.getTime() + days * 86400000);
+            }
+
+            function roundCents(val) {
+                return Math.round((Number(val) + Number.EPSILON) * 100) / 100;
+            }
+
+            function generateLedger(accountType, memberSinceStr, targetFinalBalance) {
+                const startObj = parseISODate(memberSinceStr);
+                const endObj = parseISODate(STATEMENT_END_DATE);
+                const effectiveStart = startObj.getTime() <= endObj.getTime() ? startObj : endObj;
+                const spanDays = Math.max(1, Math.round((endObj.getTime() - effectiveStart.getTime()) / 86400000));
+
+                const checkingTemplates = [
+                    { desc: 'Buckeye Payroll Direct Deposit', category: 'Direct Deposit', amount: 2150.00 },
+                    { desc: 'Whole Foods Market #104', category: 'Groceries', amount: -94.60 },
+                    { desc: 'AEP Ohio Electric Utility', category: 'Utilities', amount: -138.25 },
+                    { desc: 'Shell Station #4821', category: 'Fuel & Transit', amount: -46.80 },
+                    { desc: 'Columbus Coffee Roasters', category: 'Dining', amount: -14.75 },
+                    { desc: 'Buckeye Payroll Direct Deposit', category: 'Direct Deposit', amount: 2150.00 },
+                    { desc: 'Target Store #1892', category: 'Shopping', amount: -129.40 },
+                    { desc: 'High Street Fiber Internet', category: 'Utilities', amount: -74.99 },
+                    { desc: 'Kroger Supermarket #512', category: 'Groceries', amount: -112.35 },
+                    { desc: 'Bistro on High', category: 'Dining', amount: -68.50 }
+                ];
+
+                const savingsTemplates = [
+                    { desc: 'Automated Savings Contribution', category: 'Savings Transfer', amount: 550.00 },
+                    { desc: 'Monthly APY Interest Credit', category: 'Interest Earned', amount: 34.20 },
+                    { desc: 'Reserve Allocation Deposit', category: 'Deposit', amount: 600.00 },
+                    { desc: 'Monthly APY Interest Credit', category: 'Interest Earned', amount: 38.90 },
+                    { desc: 'Quarterly Savings Boost', category: 'Deposit', amount: 750.00 },
+                    { desc: 'Monthly APY Interest Credit', category: 'Interest Earned', amount: 44.15 }
+                ];
+
+                const templates = accountType === 'checking' ? checkingTemplates : savingsTemplates;
+                const count = templates.length;
+                const prefix = accountType === 'checking' ? 'CHK' : 'SAV';
+                const events = [];
+
+                for (let i = 0; i < count; i++) {
+                    const ratio = count === 1 ? 1 : i / (count - 1);
+                    const offsetDays = Math.min(spanDays, Math.max(0, Math.round(ratio * spanDays)));
+                    const txDateObj = addDaysUTC(effectiveStart, offsetDays);
+                    const tpl = templates[i];
+                    events.push({
+                        id: `${prefix}-${txDateObj.getUTCFullYear()}${String(txDateObj.getUTCMonth() + 1).padStart(2, '0')}-${String(100 + i * 17)}`,
+                        date: toISODate(txDateObj),
+                        desc: tpl.desc,
+                        category: tpl.category,
+                        status: 'Posted',
+                        amount: roundCents(tpl.amount)
+                    });
+                }
+
+                // Anchor the opening transaction on the membership start date so the final
+                // transaction at the end of the series equals targetFinalBalance.
+                const sumOther = events.slice(1).reduce((acc, item) => acc + item.amount, 0);
+                const openingAmt = roundCents(targetFinalBalance - sumOther);
+                events[0].date = toISODate(effectiveStart);
+                events[0].desc = accountType === 'checking' ? 'Opening Checking Deposit' : 'Opening Savings Deposit';
+                events[0].category = 'Opening Balance';
+                events[0].amount = openingAmt;
+
+                // Compute chronological running balances
+                let running = 0;
+                const chronological = events.map((ev) => {
+                    running = roundCents(running + ev.amount);
+                    return Object.assign({}, ev, { runningBalance: running });
+                });
+
+                // Return newest first (April 2026 at top down to membership date)
+                return chronological.reverse();
+            }
+
+            // -----------------------------------------------------------------
+            // VIEW SWITCHING (STRICT SEPARATION OF AUTH & DASHBOARD)
+            // -----------------------------------------------------------------
+            function showAuthView() {
+                document.getElementById('dashboard-view').classList.add('hidden');
+                document.getElementById('auth-view').classList.remove('hidden');
+            }
+
+            function showDashboardView() {
+                document.getElementById('auth-view').classList.add('hidden');
+                document.getElementById('dashboard-view').classList.remove('hidden');
+                renderDashboard();
+                navigateSection('overview');
+            }
+
+            function switchAuthTab(mode) {
+                const loginForm = document.getElementById('login-form');
+                const signupForm = document.getElementById('signup-form');
+                const loginBtn = document.getElementById('tab-login-btn');
+                const signupBtn = document.getElementById('tab-signup-btn');
+
+                document.getElementById('login-error').classList.add('hidden');
+                document.getElementById('signup-error').classList.add('hidden');
+
+                if (mode === 'signup') {
+                    loginForm.classList.add('hidden');
+                    signupForm.classList.remove('hidden');
+                    signupBtn.classList.add('active');
+                    signupBtn.setAttribute('aria-selected', 'true');
+                    loginBtn.classList.remove('active');
+                    loginBtn.setAttribute('aria-selected', 'false');
+                } else {
+                    signupForm.classList.add('hidden');
+                    loginForm.classList.remove('hidden');
+                    loginBtn.classList.add('active');
+                    loginBtn.setAttribute('aria-selected', 'true');
+                    signupBtn.classList.remove('active');
+                    signupBtn.setAttribute('aria-selected', 'false');
+                }
+            }
+
+            function navigateSection(sectionName) {
+                const sections = ['overview', 'history', 'deposits', 'transfers', 'profile'];
+                sections.forEach((sec) => {
+                    const el = document.getElementById(`sec-${sec}`);
+                    if (el) {
+                        el.classList.toggle('hidden', sec !== sectionName);
+                    }
+                    const dBtn = document.getElementById(`nav-${sec}`);
+                    if (dBtn) {
+                        dBtn.classList.toggle('active', sec === sectionName);
+                    }
+                    const mBtn = document.getElementById(`mnav-${sec}`);
+                    if (mBtn) {
+                        mBtn.classList.toggle('active', sec === sectionName);
+                    }
+                });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // -----------------------------------------------------------------
+            // AUTH FORM HANDLERS
+            // -----------------------------------------------------------------
+            function formatUSPhoneInput(inputEl) {
+                const digits = inputEl.value.replace(/\D/g, '').slice(0, 10);
+                if (digits.length === 0) {
+                    inputEl.value = '';
+                } else if (digits.length <= 3) {
+                    inputEl.value = `(${digits}`;
+                } else if (digits.length <= 6) {
+                    inputEl.value = `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+                } else {
+                    inputEl.value = `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+                }
+            }
+
+            function handleLoginSubmit(event) {
+                event.preventDefault();
+                seedDefaultUser();
+
+                const emailVal = document.getElementById('login-email').value.trim().toLowerCase();
+                const passwordVal = document.getElementById('login-password').value;
+                const errBox = document.getElementById('login-error');
+                const errText = document.getElementById('login-error-text');
+
+                const users = readUsers();
+                const matched = users[emailVal];
+
+                if (!matched || matched.password !== passwordVal) {
+                    errText.textContent = 'Invalid email address or password. Try jordan.taylor@example.com or complete enrollment.';
+                    errBox.classList.remove('hidden');
+                    return;
+                }
+
+                errBox.classList.add('hidden');
+                currentUser = matched;
+                try {
+                    window.localStorage.setItem(STORAGE_SESSION_KEY, emailVal);
+                } catch (e) {}
+
+                showDashboardView();
+                showToast(`Signed in as ${matched.firstName} ${matched.lastName}.`, 'success');
+            }
+
+            function handleSignupSubmit(event) {
+                event.preventDefault();
+                const errBox = document.getElementById('signup-error');
+                const errText = document.getElementById('signup-error-text');
+
+                const firstName = document.getElementById('reg-fname').value.trim();
+                const lastName = document.getElementById('reg-lname').value.trim();
+                const email = document.getElementById('reg-email').value.trim().toLowerCase();
+                const phone = document.getElementById('reg-phone').value.trim();
+                const dob = document.getElementById('reg-dob').value;
+                const memberSince = document.getElementById('reg-member-since').value;
+                const password = document.getElementById('reg-password').value;
+
+                const routingNumber = document.getElementById('reg-routing').value.trim();
+                const checkingNumber = document.getElementById('reg-checking-num').value.trim();
+                const savingsNumber = document.getElementById('reg-savings-num').value.trim();
+                const checkingBalance = parseFloat(document.getElementById('reg-checking-bal').value);
+                const savingsBalance = parseFloat(document.getElementById('reg-savings-bal').value);
+
+                const sq1 = document.getElementById('reg-sq1').value;
+                const sa1 = document.getElementById('reg-sa1').value.trim();
+                const sq2 = document.getElementById('reg-sq2').value;
+                const sa2 = document.getElementById('reg-sa2').value.trim();
+
+                if (!firstName || !lastName || !email || !email.includes('@')) {
+                    errText.textContent = 'Please enter your first name, last name, and a valid email address.';
+                    errBox.classList.remove('hidden');
+                    return;
+                }
+                if (phone.replace(/\D/g, '').length !== 10) {
+                    errText.textContent = 'Please enter a valid 10-digit U.S. phone number.';
+                    errBox.classList.remove('hidden');
+                    return;
+                }
+                if (!/^\d{9}$/.test(routingNumber)) {
+                    errText.textContent = 'ABA Routing Number must be exactly 9 digits.';
+                    errBox.classList.remove('hidden');
+                    return;
+                }
+                if (!/^\d{6,17}$/.test(checkingNumber) || !/^\d{6,17}$/.test(savingsNumber)) {
+                    errText.textContent = 'Checking and Savings account numbers must contain 6 to 17 digits.';
+                    errBox.classList.remove('hidden');
+                    return;
+                }
+                if (isNaN(checkingBalance) || checkingBalance < 0 || isNaN(savingsBalance) || savingsBalance < 0) {
+                    errText.textContent = 'Opening balances must be zero or a positive dollar amount.';
+                    errBox.classList.remove('hidden');
+                    return;
+                }
+
+                errBox.classList.add('hidden');
+
+                const newRecord = buildUserRecord({
+                    firstName,
+                    lastName,
+                    email,
+                    phone,
+                    dob,
+                    memberSince,
+                    password,
+                    routingNumber,
+                    checkingNumber,
+                    savingsNumber,
+                    checkingBalance,
+                    savingsBalance,
+                    sq1,
+                    sa1,
+                    sq2,
+                    sa2
+                });
+
+                const users = readUsers();
+                users[email] = newRecord;
+                writeUsers(users);
+
+                currentUser = newRecord;
+                try {
+                    window.localStorage.setItem(STORAGE_SESSION_KEY, email);
+                } catch (e) {}
+
+                showDashboardView();
+                showToast(`Enrollment complete. Welcome, ${firstName}!`, 'success');
+            }
+
+            function handleSignOut() {
+                currentUser = null;
+                try {
+                    window.localStorage.removeItem(STORAGE_SESSION_KEY);
+                } catch (e) {}
+                switchAuthTab('login');
+                showAuthView();
+                showToast('You have signed out.', 'info');
+            }
+
+            // -----------------------------------------------------------------
+            // DASHBOARD RENDERING
+            // -----------------------------------------------------------------
+            function renderDashboard() {
+                if (!currentUser) return;
+
+                const fullName = `${currentUser.firstName} ${currentUser.lastName}`;
+                const totalBalance = roundCents(currentUser.checkingBalance + currentUser.savingsBalance);
+                const routing = currentUser.routingNumber;
+                const chkNum = currentUser.checkingNumber;
+                const savNum = currentUser.savingsNumber;
+                const chkLast4 = chkNum.slice(-4);
+                const savLast4 = savNum.slice(-4);
+
+                document.getElementById('header-user-name').textContent = fullName;
+                document.getElementById('header-member-since').textContent = `Member since ${formatDisplayDate(currentUser.memberSince)}`;
+                document.getElementById('dash-greeting-name').textContent = currentUser.firstName;
+                document.getElementById('dash-member-date').textContent = formatDisplayDate(currentUser.memberSince);
+                document.getElementById('dash-routing-num').textContent = routing;
+                document.getElementById('dash-total-balance').textContent = formatCurrency(totalBalance);
+
+                document.getElementById('card-checking-num').textContent = chkNum;
+                document.getElementById('card-checking-routing').textContent = routing;
+                document.getElementById('card-checking-balance').textContent = formatCurrency(currentUser.checkingBalance);
+
+                document.getElementById('card-savings-num').textContent = savNum;
+                document.getElementById('card-savings-routing').textContent = routing;
+                document.getElementById('card-savings-balance').textContent = formatCurrency(currentUser.savingsBalance);
+
+                document.getElementById('ledger-tab-checking').textContent = `Checking (${chkNum})`;
+                document.getElementById('ledger-tab-savings').textContent = `Savings (${savNum})`;
+
+                // Direct Deposit Credentials & Authorization Sheet
+                document.getElementById('dd-cred-routing').textContent = routing;
+                document.getElementById('dd-cred-checking').textContent = chkNum;
+                document.getElementById('dd-cred-savings').textContent = savNum;
+                document.getElementById('dd-form-name').textContent = fullName;
+                document.getElementById('dd-form-routing').textContent = routing;
+
+                const ddTypeSelect = document.getElementById('dd-form-acct-type');
+                ddTypeSelect.options[0].textContent = `Checking (${chkNum})`;
+                ddTypeSelect.options[1].textContent = `Savings (${savNum})`;
+                syncDDFormAccountNumber();
+
+                // Update account dropdown options across Deposits & Transfers
+                ['mcd-account', 'ach-in-dest', 'ach-out-from', 'wire-out-from'].forEach((id) => {
+                    const sel = document.getElementById(id);
+                    if (sel && sel.options.length >= 2) {
+                        sel.options[0].value = `Buckeye Checking (${chkNum})`;
+                        sel.options[0].textContent = `Buckeye Checking (${chkNum})`;
+                        sel.options[1].value = `Buckeye Savings (${savNum})`;
+                        sel.options[1].textContent = `Buckeye Savings (${savNum})`;
+                    }
+                });
+
+                // Profile tab
+                document.getElementById('prof-name').textContent = fullName;
+                document.getElementById('prof-email').textContent = currentUser.email;
+                document.getElementById('prof-phone').textContent = currentUser.phone;
+                document.getElementById('prof-dob').textContent = formatDisplayDate(currentUser.dob);
+                document.getElementById('prof-member-since').textContent = formatDisplayDate(currentUser.memberSince);
+                document.getElementById('prof-routing').textContent = routing;
+                document.getElementById('prof-sq1').textContent = currentUser.sq1;
+                document.getElementById('prof-sa1').textContent = currentUser.sa1;
+                document.getElementById('prof-sq2').textContent = currentUser.sq2;
+                document.getElementById('prof-sa2').textContent = currentUser.sa2;
+
+                // Recent activity preview
+                const recentCombined = [
+                    ...currentUser.checkingHistory.map((t) => Object.assign({}, t, { acctLabel: `Checking (...${chkLast4})` })),
+                    ...currentUser.savingsHistory.map((t) => Object.assign({}, t, { acctLabel: `Savings (...${savLast4})` }))
+                ].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 6);
+
+                const recentListEl = document.getElementById('overview-recent-list');
+                recentListEl.innerHTML = '';
+
+                recentCombined.forEach((tx) => {
+                    const isCredit = tx.amount >= 0;
+                    const row = document.createElement('div');
+                    row.className = 'activity-row';
+                    row.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+                            <div class="tx-badge-icon ${isCredit ? 'tx-credit-icon' : 'tx-debit-icon'}">
+                                <span style="font-size: 14px; font-weight: 700;">${isCredit ? '+' : '-'}</span>
+                            </div>
+                            <div style="min-width: 0;">
+                                <p class="tx-desc">${escapeHtml(tx.desc)}</p>
+                                <p class="tx-sub">${formatDisplayDate(tx.date)} &bull; ${escapeHtml(tx.acctLabel)} &bull; ${escapeHtml(tx.category)}</p>
+                            </div>
+                        </div>
+                        <div style="flex-shrink: 0;">
+                            <p class="${isCredit ? 'tx-amt-credit' : 'tx-amt-debit'} tabular-nums">${isCredit ? '+' : ''}${formatCurrency(tx.amount)}</p>
+                            <p class="tx-bal-after tabular-nums">Bal: ${formatCurrency(tx.runningBalance)}</p>
+                        </div>
+                    `;
+                    row.addEventListener('click', () => openTransactionReceipt(tx));
+                    recentListEl.appendChild(row);
+                });
+
+                renderLedgerView(currentLedgerAccount);
+            }
+
+            // -----------------------------------------------------------------
+            // LEDGER VIEW & RECEIPT MODAL
+            // -----------------------------------------------------------------
+            function renderLedgerView(accountType) {
+                if (!currentUser) return;
+                currentLedgerAccount = accountType === 'savings' ? 'savings' : 'checking';
+
+                const isChecking = currentLedgerAccount === 'checking';
+                const acctNumber = isChecking ? currentUser.checkingNumber : currentUser.savingsNumber;
+                const acctBalance = isChecking ? currentUser.checkingBalance : currentUser.savingsBalance;
+                const historyItems = isChecking ? currentUser.checkingHistory : currentUser.savingsHistory;
+
+                document.getElementById('ledger-title').textContent = isChecking
+                    ? 'Buckeye Advantage Checking'
+                    : 'Buckeye Reserve Savings';
+                document.getElementById('ledger-subtitle').textContent =
+                    `Account #${acctNumber} • Routing #${currentUser.routingNumber}`;
+                document.getElementById('ledger-balance').textContent = formatCurrency(acctBalance);
+
+                document.getElementById('ledger-tab-checking').classList.toggle('active', isChecking);
+                document.getElementById('ledger-tab-savings').classList.toggle('active', !isChecking);
+
+                const searchQuery = (document.getElementById('tx-search').value || '').trim().toLowerCase();
+                const typeFilter = document.getElementById('tx-type-filter').value;
+
+                const filtered = historyItems.filter((tx) => {
+                    const matchesSearch =
+                        !searchQuery ||
+                        tx.desc.toLowerCase().includes(searchQuery) ||
+                        tx.id.toLowerCase().includes(searchQuery) ||
+                        tx.category.toLowerCase().includes(searchQuery);
+                    const matchesType =
+                        typeFilter === 'all' ||
+                        (typeFilter === 'credit' && tx.amount >= 0) ||
+                        (typeFilter === 'debit' && tx.amount < 0);
+                    return matchesSearch && matchesType;
+                });
+
+                const tbody = document.getElementById('ledger-tbody');
+                tbody.innerHTML = '';
+
+                if (filtered.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="padding: 28px; text-align: center; font-size: 12px; color: var(--text-muted);">No matching transactions found.</td></tr>`;
+                    return;
+                }
+
+                filtered.forEach((tx) => {
+                    const isCredit = tx.amount >= 0;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-size: 12px; color: var(--text-secondary); white-space: nowrap;">${formatDisplayDate(tx.date)}</td>
+                        <td>
+                            <p class="tx-desc">${escapeHtml(tx.desc)}</p>
+                            <p class="tx-sub mono">${escapeHtml(tx.id)}</p>
+                        </td>
+                        <td class="col-sm-hide"><span class="cat-pill">${escapeHtml(tx.category)}</span></td>
+                        <td class="col-md-hide"><span class="status-posted"><span class="status-dot"></span> ${escapeHtml(tx.status)}</span></td>
+                        <td style="text-align: right;" class="tabular-nums ${isCredit ? 'tx-amt-credit' : 'tx-amt-debit'}">${isCredit ? '+' : ''}${formatCurrency(tx.amount)}</td>
+                        <td class="col-sm-hide tabular-nums" style="text-align: right; font-size: 12px; color: var(--text-muted);">${formatCurrency(tx.runningBalance)}</td>
+                    `;
+                    tr.addEventListener('click', () => {
+                        openTransactionReceipt(Object.assign({}, tx, {
+                            acctLabel: `${isChecking ? 'Checking' : 'Savings'} (${acctNumber})`
+                        }));
+                    });
+                    tbody.appendChild(tr);
+                });
+            }
+
+            function openTransactionReceipt(tx) {
+                const isCredit = tx.amount >= 0;
+                const body = document.getElementById('tx-detail-body');
+                body.innerHTML = `
+                    <div style="text-align: center; padding-bottom: 16px; border-bottom: 1px solid var(--bg-muted);">
+                        <span class="cat-pill">${escapeHtml(tx.category)}</span>
+                        <p class="tabular-nums" style="margin: 10px 0 4px 0; font-size: 28px; font-weight: 800; color: ${isCredit ? 'var(--success-text)' : 'var(--navy)'};">
+                            ${isCredit ? '+' : ''}${formatCurrency(tx.amount)}
+                        </p>
+                        <p style="margin: 0; font-size: 12px; color: var(--text-muted);">${escapeHtml(tx.desc)}</p>
+                    </div>
+                    <div class="summary-list-box" style="margin-top: 16px;">
+                        <div class="summary-line"><span style="color: var(--text-muted);">Reference ID</span><strong class="mono">${escapeHtml(tx.id)}</strong></div>
+                        <div class="summary-line"><span style="color: var(--text-muted);">Posting Date</span><strong>${formatDisplayDate(tx.date)}</strong></div>
+                        <div class="summary-line"><span style="color: var(--text-muted);">Account</span><strong>${escapeHtml(tx.acctLabel || 'Buckeye Account')}</strong></div>
+                        <div class="summary-line"><span style="color: var(--text-muted);">Status</span><strong style="color: var(--success-text);">${escapeHtml(tx.status)}</strong></div>
+                        <div class="summary-line summary-line-total"><span>Resulting Balance</span><strong class="tabular-nums">${formatCurrency(tx.runningBalance)}</strong></div>
+                    </div>
+                `;
+                document.getElementById('tx-detail-modal').classList.remove('hidden');
+            }
+
+            // -----------------------------------------------------------------
+            // DEPOSITS & TRANSFERS HANDLERS
+            // -----------------------------------------------------------------
+            function switchDepositTab(tab) {
+                ['direct', 'mobile', 'ach'].forEach((key) => {
+                    document.getElementById(`dep-panel-${key}`).classList.toggle('hidden', key !== tab);
+                    document.getElementById(`dep-tab-${key}`).classList.toggle('active', key === tab);
+                });
+            }
+
+            function syncDDFormAccountNumber() {
+                if (!currentUser) return;
+                const type = document.getElementById('dd-form-acct-type').value;
+                document.getElementById('dd-form-acct-num').textContent =
+                    type === 'savings' ? currentUser.savingsNumber : currentUser.checkingNumber;
+            }
+
+            function switchTransferTab(tab) {
+                ['ach', 'wire'].forEach((key) => {
+                    document.getElementById(`trf-panel-${key}`).classList.toggle('hidden', key !== tab);
+                    document.getElementById(`trf-tab-${key}`).classList.toggle('active', key === tab);
+                });
+            }
+
+            function openTransferReviewModal(event, kind) {
+                event.preventDefault();
+                let html = '';
+
+                if (kind === 'ACH Transfer') {
+                    const from = document.getElementById('ach-out-from').value;
+                    const name = document.getElementById('ach-out-name').value.trim();
+                    const bank = document.getElementById('ach-out-bank').value.trim();
+                    const routing = document.getElementById('ach-out-routing').value.trim();
+                    const acct = document.getElementById('ach-out-acct').value.trim();
+                    const amt = parseFloat(document.getElementById('ach-out-amount').value) || 0;
+                    const speed = document.getElementById('ach-out-speed').value;
+
+                    html = `
+                        <div class="summary-line"><span style="color: var(--text-muted);">Transfer Type</span><strong>External ACH Transfer</strong></div>
+                        <div class="summary-line"><span style="color: var(--text-muted);">From Account</span><strong>${escapeHtml(from)}</strong></div>
+                        <div class="summary-line"><span style="color: var(--text-muted);">Recipient</span><strong>${escapeHtml(name)}</strong></div>
+                        <div class="summary-line"><span style="color: var(--text-muted);">Receiving Bank</span><strong>${escapeHtml(bank)} (${escapeHtml(routing)})</strong></div>
+                        <div class="summary-line"><span style="color: var(--text-muted);">Recipient Account</span><strong class="tabular-nums">${escapeHtml(acct)}</strong></div>
+                        <div class="summary-line"><span style="color: var(--text-muted);">Speed</span><strong>${escapeHtml(speed)}</strong></div>
+                        <div class="summary-line summary-line-total"><span>Total Amount</span><strong class="tabular-nums">${formatCurrency(amt)}</strong></div>
+                    `;
+                } else {
+                    const scope = document.getElementById('wire-scope').value;
+                    const from = document.getElementById('wire-out-from').value;
+                    const name = document.getElementById('wire-out-name').value.trim();
+                    const bank = document.getElementById('wire-out-bank').value.trim();
+                    const routing = document.getElementById('wire-out-routing').value.trim();
+                    const acct = document.getElementById('wire-out-acct').value.trim();
+                    const amt = parseFloat(document.getElementById('wire-out-amount').value) || 0;
+
+                    html = `
+                        <div class="summary-line"><span style="color: var(--text-muted);">Wire Type</span><strong>${escapeHtml(scope)}</strong></div>
+                        <div class="summary-line"><span style="color: var(--text-muted);">From Account</span><strong>${escapeHtml(from)}</strong></div>
+                        <div class="summary-line"><span style="color: var(--text-muted);">Beneficiary</span><strong>${escapeHtml(name)}</strong></div>
+                        <div class="summary-line"><span style="color: var(--text-muted);">Beneficiary Bank</span><strong>${escapeHtml(bank)} (${escapeHtml(routing)})</strong></div>
+                        <div class="summary-line"><span style="color: var(--text-muted);">Beneficiary Account</span><strong class="tabular-nums">${escapeHtml(acct)}</strong></div>
+                        <div class="summary-line summary-line-total"><span>Wire Amount</span><strong class="tabular-nums">${formatCurrency(amt)}</strong></div>
+                    `;
+                }
+
+                document.getElementById('review-modal-title').textContent = `Review ${kind}`;
+                document.getElementById('review-summary-box').innerHTML = html;
+                document.getElementById('review-step-confirm').classList.remove('hidden');
+                document.getElementById('review-step-error').classList.add('hidden');
+                document.getElementById('transfer-review-modal').classList.remove('hidden');
+            }
+
+            function handleFinalSendClick() {
+                document.getElementById('review-step-confirm').classList.add('hidden');
+                document.getElementById('review-step-error').classList.remove('hidden');
+            }
+
+            // -----------------------------------------------------------------
+            // FORMATTING, CLIPBOARD & TOAST HELPERS
+            // -----------------------------------------------------------------
+            function formatCurrency(num) {
+                const val = Number(num) || 0;
+                return val.toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+            function formatDisplayDate(isoStr) {
+                if (!isoStr) return '--';
+                const parts = isoStr.split('-').map(Number);
+                if (parts.length !== 3) return isoStr;
+                const d = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+                return d.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    timeZone: 'UTC'
+                });
+            }
+
+            function escapeHtml(str) {
+                return String(str || '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;');
+            }
+
+            function copyToClipboard(text, label) {
+                if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                    navigator.clipboard.writeText(text).catch(() => {});
+                }
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.setAttribute('readonly', '');
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                try {
+                    document.execCommand('copy');
+                } catch (e) {}
+                document.body.removeChild(ta);
+                showToast(`${label} (${text}) copied.`, 'success');
+            }
+
+            function showToast(message, variant) {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = `toast-item ${variant === 'info' ? 'toast-info' : variant === 'warn' ? 'toast-warn' : ''}`;
+
+                const msgSpan = document.createElement('span');
+                msgSpan.textContent = message;
+
+                const closeBtn = document.createElement('button');
+                closeBtn.type = 'button';
+                closeBtn.className = 'toast-close';
+                closeBtn.textContent = '\u00d7';
+                closeBtn.addEventListener('click', () => toast.remove());
+
+                toast.appendChild(msgSpan);
+                toast.appendChild(closeBtn);
+                container.appendChild(toast);
+
+                window.setTimeout(() => {
+                    if (toast.parentNode) toast.remove();
+                }, 3600);
+            }
+
+            // -----------------------------------------------------------------
+            // EVENT BINDING & INITIALIZATION
+            // -----------------------------------------------------------------
+            function bindEvents() {
+                // Auth switcher & forms
+                document.getElementById('tab-login-btn').addEventListener('click', () => switchAuthTab('login'));
+                document.getElementById('tab-signup-btn').addEventListener('click', () => switchAuthTab('signup'));
+                document.getElementById('switch-to-signup-link').addEventListener('click', () => switchAuthTab('signup'));
+                document.getElementById('forgot-pw-btn').addEventListener('click', () => {
+                    showToast('Password reset instructions are sent to your registered email.', 'info');
+                });
+                document.getElementById('reg-phone').addEventListener('input', (e) => formatUSPhoneInput(e.target));
+                document.getElementById('login-form').addEventListener('submit', handleLoginSubmit);
+                document.getElementById('signup-form').addEventListener('submit', handleSignupSubmit);
+
+                // Dashboard navigation & sign out
+                document.getElementById('dash-brand-home').addEventListener('click', () => navigateSection('overview'));
+                document.getElementById('signout-btn').addEventListener('click', handleSignOut);
+
+                document.querySelectorAll('.nav-tab, .mnav-tab').forEach((btn) => {
+                    btn.addEventListener('click', () => {
+                        const target = btn.getAttribute('data-section');
+                        if (target) navigateSection(target);
+                    });
+                });
+
+                // Account cards & history navigation
+                document.getElementById('card-checking-box').addEventListener('click', () => {
+                    renderLedgerView('checking');
+                    navigateSection('history');
+                });
+                document.getElementById('card-savings-box').addEventListener('click', () => {
+                    renderLedgerView('savings');
+                    navigateSection('history');
+                });
+                document.getElementById('view-all-history-btn').addEventListener('click', () => {
+                    renderLedgerView('checking');
+                    navigateSection('history');
+                });
+                document.getElementById('back-to-accounts-btn').addEventListener('click', () => navigateSection('overview'));
+                document.getElementById('ledger-tab-checking').addEventListener('click', () => renderLedgerView('checking'));
+                document.getElementById('ledger-tab-savings').addEventListener('click', () => renderLedgerView('savings'));
+                document.getElementById('tx-search').addEventListener('input', () => renderLedgerView(currentLedgerAccount));
+                document.getElementById('tx-type-filter').addEventListener('change', () => renderLedgerView(currentLedgerAccount));
+
+                // Quick actions
+                document.querySelectorAll('.quick-action-btn').forEach((btn) => {
+                    btn.addEventListener('click', () => {
+                        const spec = (btn.getAttribute('data-qa') || '').split(':');
+                        if (spec[0] === 'deposits') {
+                            switchDepositTab(spec[1] || 'direct');
+                            navigateSection('deposits');
+                        } else if (spec[0] === 'transfers') {
+                            switchTransferTab(spec[1] || 'ach');
+                            navigateSection('transfers');
+                        }
+                    });
+                });
+
+                // Copy buttons
+                document.getElementById('copy-routing-btn').addEventListener('click', () => {
+                    if (currentUser) copyToClipboard(currentUser.routingNumber, 'ABA Routing Number');
+                });
+                document.getElementById('copy-checking-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (currentUser) copyToClipboard(currentUser.checkingNumber, 'Checking Account Number');
+                });
+                document.getElementById('copy-savings-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (currentUser) copyToClipboard(currentUser.savingsNumber, 'Savings Account Number');
+                });
+                document.getElementById('dd-copy-routing').addEventListener('click', () => {
+                    if (currentUser) copyToClipboard(currentUser.routingNumber, 'ABA Routing Number');
+                });
+                document.getElementById('dd-copy-checking').addEventListener('click', () => {
+                    if (currentUser) copyToClipboard(currentUser.checkingNumber, 'Checking Account Number');
+                });
+                document.getElementById('dd-copy-savings').addEventListener('click', () => {
+                    if (currentUser) copyToClipboard(currentUser.savingsNumber, 'Savings Account Number');
+                });
+
+                // Deposits tabs, print & forms
+                document.getElementById('dep-tab-direct').addEventListener('click', () => switchDepositTab('direct'));
+                document.getElementById('dep-tab-mobile').addEventListener('click', () => switchDepositTab('mobile'));
+                document.getElementById('dep-tab-ach').addEventListener('click', () => switchDepositTab('ach'));
+                document.getElementById('dd-form-acct-type').addEventListener('change', syncDDFormAccountNumber);
+                document.getElementById('print-dd-btn').addEventListener('click', () => window.print());
+
+                document.getElementById('mcd-front-file').addEventListener('change', (e) => {
+                    const f = e.target.files && e.target.files[0];
+                    if (f) document.getElementById('front-status').textContent = `Selected: ${f.name}`;
+                });
+                document.getElementById('mcd-back-file').addEventListener('change', (e) => {
+                    const f = e.target.files && e.target.files[0];
+                    if (f) document.getElementById('back-status').textContent = `Selected: ${f.name}`;
+                });
+
+                document.getElementById('mobile-check-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const acct = document.getElementById('mcd-account').value;
+                    const amt = parseFloat(document.getElementById('mcd-amount').value) || 0;
+                    const box = document.getElementById('mcd-receipt');
+                    box.classList.remove('hidden');
+                    box.innerHTML = `<strong>Check Deposit Submitted (Pending Verification):</strong> ${formatCurrency(amt)} to ${escapeHtml(acct)}. Funds are held until check verification completes.`;
+                    showToast('Mobile check deposit submitted for verification.', 'info');
+                    e.target.reset();
+                    document.getElementById('front-status').textContent = 'Click to select check front image';
+                    document.getElementById('back-status').textContent = 'Click to select check back image';
+                });
+
+                document.getElementById('inbound-ach-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const bank = document.getElementById('ach-in-bank').value.trim();
+                    const dest = document.getElementById('ach-in-dest').value;
+                    const amt = parseFloat(document.getElementById('ach-in-amount').value) || 0;
+                    const box = document.getElementById('ach-in-receipt');
+                    box.classList.remove('hidden');
+                    box.innerHTML = `<strong>Inbound ACH Scheduled:</strong> ${formatCurrency(amt)} from ${escapeHtml(bank)} into ${escapeHtml(dest)}. Standard ACH settlement takes 2–3 business days.`;
+                    showToast('Inbound ACH deposit scheduled.', 'info');
+                    e.target.reset();
+                });
+
+                // Transfers tabs, review & final restriction step
+                document.getElementById('trf-tab-ach').addEventListener('click', () => switchTransferTab('ach'));
+                document.getElementById('trf-tab-wire').addEventListener('click', () => switchTransferTab('wire'));
+                document.getElementById('ach-out-form').addEventListener('submit', (e) => openTransferReviewModal(e, 'ACH Transfer'));
+                document.getElementById('wire-out-form').addEventListener('submit', (e) => openTransferReviewModal(e, 'Wire Transfer'));
+                document.getElementById('btn-final-send').addEventListener('click', handleFinalSendClick);
+
+                // Modal close handlers
+                const closeTxModal = () => document.getElementById('tx-detail-modal').classList.add('hidden');
+                const closeTrfModal = () => document.getElementById('transfer-review-modal').classList.add('hidden');
+                document.getElementById('close-tx-modal-x').addEventListener('click', closeTxModal);
+                document.getElementById('close-tx-modal-btn').addEventListener('click', closeTxModal);
+                document.getElementById('close-trf-modal-x').addEventListener('click', closeTrfModal);
+                document.getElementById('cancel-trf-btn').addEventListener('click', closeTrfModal);
+                document.getElementById('done-trf-error-btn').addEventListener('click', closeTrfModal);
+            }
+
+            function initApp() {
+                seedDefaultUser();
+                bindEvents();
+
+                // Always start on the Sign-In view (#auth-view) on initial load
+                // with #dashboard-view hidden until sign-in or sign-up occurs.
+                showAuthView();
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initApp);
+            } else {
+                initApp();
+            }
+        })();
+    </script>
+</body>
+</html>
